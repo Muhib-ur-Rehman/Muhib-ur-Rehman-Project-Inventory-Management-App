@@ -9,7 +9,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @RestController
-public class inventoryController {
+public class InventoryController {
 
     @Autowired
     InventoryService inventoryService;
@@ -27,7 +27,7 @@ public class inventoryController {
 
     @GetMapping("/item/{id}")
     public Inventory getItem(@PathVariable("id") int itemId){
-        return this.inventoryService.getItem(itemId).get();
+        return this.inventoryService.getItem(itemId);
     }
 
     @PutMapping("item/{id}/{qty}")

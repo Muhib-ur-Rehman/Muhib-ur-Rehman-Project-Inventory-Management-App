@@ -16,8 +16,8 @@ public class InventoryService {
     @Autowired
     InventoryRepo inventoryRepo;
 
-    public void addItem(Inventory inventory){
-        this.inventoryRepo.save(inventory);
+    public Inventory addItem(Inventory inventory){
+        return this.inventoryRepo.save(inventory);
     }
 
     public Optional<Inventory> getInventoryItem(int itemId) {
@@ -32,8 +32,8 @@ public class InventoryService {
         return this.inventoryRepo.findAll();
     }
 
-    public Optional<Inventory> getItem(int itemId){
-        return this.inventoryRepo.findById(itemId);
+    public Inventory getItem(int itemId){
+        return this.inventoryRepo.findById(itemId).get();
     }
 
     public void addQty(int id , int qty){
