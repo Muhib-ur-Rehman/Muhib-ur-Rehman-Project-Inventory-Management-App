@@ -1,5 +1,6 @@
 package com.example.InventoryManager.unit_test;
 import com.example.InventoryManager.model.Inventory;
+import com.example.InventoryManager.model.OrderInfo;
 import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
@@ -93,4 +94,5 @@ public class InventoryServiceUnitTest {
         Mockito.doNothing().when(inventoryRepo).deleteById(1);
         Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(1));
     }
+
 }

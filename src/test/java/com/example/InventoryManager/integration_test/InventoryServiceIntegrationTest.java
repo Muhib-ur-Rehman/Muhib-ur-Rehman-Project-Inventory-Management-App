@@ -1,11 +1,17 @@
 package com.example.InventoryManager.integration_test;
 
 import com.example.InventoryManager.model.Inventory;
+import com.example.InventoryManager.model.OrderInfo;
+import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -16,6 +22,12 @@ public class InventoryServiceIntegrationTest {
 
     @Autowired
     InventoryService inventoryService;
+
+    @Mock
+    InventoryRepo inventoryRepo;
+
+    @MockBean
+    RabbitTemplate template;
 
     @Test
     public void addItemIntegrationTest(){
@@ -67,5 +79,24 @@ public class InventoryServiceIntegrationTest {
     @Test
     public void deleteItemIntegrationTest(){
         Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(10));
+    }
+
+    @Test
+    public void consumeMessageFromQueueUnitTest(){
+        Inventory item = new Inventory();
+        item.setItemId(1);
+        item.setQty(15);
+        item.setName("Lays");
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setItemId(1);
+        orderInfo.setOrderStatus("PLACED");
+        orderInfo.setPaymentStatus("ACCEPTED");
+        orderInfo.setQty(2);
+        Mockito.when(inventoryRepo.findById(1)).thenReturn(java.util.Optional.of(item));
+        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+        orderInfo.setQty(200);
+        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+        orderInfo.setItemId(2222);
+        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
     }
 }
