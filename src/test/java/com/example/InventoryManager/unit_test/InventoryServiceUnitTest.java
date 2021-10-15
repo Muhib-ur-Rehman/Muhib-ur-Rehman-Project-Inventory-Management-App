@@ -1,6 +1,7 @@
 package com.example.InventoryManager.unit_test;
 import com.example.InventoryManager.model.Inventory;
 import com.example.InventoryManager.model.OrderInfo;
+import com.example.InventoryManager.producer.MessageProducer;
 import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,9 @@ public class InventoryServiceUnitTest {
 
     @Mock
     InventoryRepo inventoryRepo;
+
+    @Mock
+    MessageProducer messageProducer;
 
     @Test
     public void addItemUnitTest(){
@@ -93,6 +97,32 @@ public class InventoryServiceUnitTest {
     public void deleteItemUnitTest(){
         Mockito.doNothing().when(inventoryRepo).deleteById(1);
         Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(1));
+    }
+
+    @Test
+    public void updateItemQtyUnitTest(){
+        Mockito.doNothing().when(messageProducer).sendMessage(new OrderInfo());
+        Inventory item = new Inventory();
+        item.setItemId(1);
+        item.setQty(15);
+        item.setName("Chicken Burger");
+        Mockito.when(this.inventoryRepo.findById(1)).thenReturn(java.util.Optional.of(item));
+        OrderInfo order = new OrderInfo();
+        order.setOrderId(1);
+        order.setOrderStatus("PLACED");
+        order.setQty(1);
+        order.setName("Chicken Burger");
+        order.setPaymentStatus("ACCEPTED");
+        order.setItemId(1);
+        Assertions.assertEquals("IN-PROCESS",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("ACCEPTED",this.inventoryService.updateItemQty(order).getPaymentStatus());
+        order.setQty(100);
+        Assertions.assertEquals("CANCELLED",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("REFUNDED",this.inventoryService.updateItemQty(order).getPaymentStatus());
+        order.setQty(1);
+        order.setItemId(11111);
+        Assertions.assertEquals("CANCELLED",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("REFUNDED",this.inventoryService.updateItemQty(order).getPaymentStatus());
     }
 
 }

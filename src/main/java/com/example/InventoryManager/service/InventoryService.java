@@ -3,6 +3,7 @@ package com.example.InventoryManager.service;
 import com.example.InventoryManager.config.InventoryConfig;
 import com.example.InventoryManager.model.Inventory;
 import com.example.InventoryManager.model.OrderInfo;
+import com.example.InventoryManager.producer.MessageProducer;
 import com.example.InventoryManager.repo.InventoryRepo;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,6 +27,9 @@ public class InventoryService {
 
     @Autowired
     InventoryService inventoryService;
+
+    @Autowired
+    MessageProducer messageProducer;
 
     public Inventory addItem(Inventory inventory){
         return this.inventoryRepo.save(inventory);
@@ -57,27 +61,27 @@ public class InventoryService {
         this.inventoryRepo.deleteById(itemId);
     }
 
-    @RabbitListener(queues = InventoryConfig.INVENTORY_QUEUE)
-    public void consumeMessageFromQueue(OrderInfo order){
-        System.out.println("Message received from queue : " + order);
+    public OrderInfo updateItemQty(OrderInfo order){
         try {
             if (order.getPaymentStatus().equals("ACCEPTED")){
                 Inventory orderedItemInfo = inventoryRepo.findById(order.getItemId()).get();
                 if (order.getQty() > orderedItemInfo.getQty()){
                     order.setOrderStatus("CANCELLED");
-                    template.convertAndSend(InventoryConfig.EXCHANGE,InventoryConfig.ROUTING_KEY,order);
+                    order.setPaymentStatus("REFUNDED");
+                    this.messageProducer.sendMessage(order);
                 }
                 else if (order.getQty() <= orderedItemInfo.getQty()){
                     order.setOrderStatus("IN-PROCESS");
-                    template.convertAndSend(InventoryConfig.EXCHANGE,InventoryConfig.ROUTING_KEY,order);
-                    updateInventory(order.getItemId() ,orderedItemInfo.getQty() - order.getQty());
+                    this.messageProducer.sendMessage(order);
+                    this.inventoryRepo.updateInventory(order.getItemId() ,orderedItemInfo.getQty() - order.getQty());
                 }
             }
         }
         catch (NoSuchElementException e){
             order.setPaymentStatus("REFUNDED");
             order.setOrderStatus("CANCELLED");
-            template.convertAndSend(InventoryConfig.EXCHANGE,InventoryConfig.ROUTING_KEY,order);
+            this.messageProducer.sendMessage(order);
         }
+        return order;
     }
 }

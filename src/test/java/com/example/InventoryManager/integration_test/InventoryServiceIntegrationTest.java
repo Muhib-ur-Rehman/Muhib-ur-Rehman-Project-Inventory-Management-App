@@ -2,6 +2,7 @@ package com.example.InventoryManager.integration_test;
 
 import com.example.InventoryManager.model.Inventory;
 import com.example.InventoryManager.model.OrderInfo;
+import com.example.InventoryManager.producer.MessageProducer;
 import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
@@ -22,6 +23,9 @@ public class InventoryServiceIntegrationTest {
 
     @Autowired
     InventoryService inventoryService;
+
+    @Mock
+    MessageProducer messageProducer;
 
     @Mock
     InventoryRepo inventoryRepo;
@@ -81,22 +85,43 @@ public class InventoryServiceIntegrationTest {
         Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(10));
     }
 
+//    @Test
+//    public void consumeMessageFromQueueUnitTest(){
+//        Inventory item = new Inventory();
+//        item.setItemId(1);
+//        item.setQty(15);
+//        item.setName("Lays");
+//        OrderInfo orderInfo = new OrderInfo();
+//        orderInfo.setItemId(1);
+//        orderInfo.setOrderStatus("PLACED");
+//        orderInfo.setPaymentStatus("ACCEPTED");
+//        orderInfo.setQty(2);
+//        Mockito.when(inventoryRepo.findById(1)).thenReturn(java.util.Optional.of(item));
+//        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+//        orderInfo.setQty(200);
+//        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+//        orderInfo.setItemId(2222);
+//        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+//    }
+
     @Test
-    public void consumeMessageFromQueueUnitTest(){
-        Inventory item = new Inventory();
-        item.setItemId(1);
-        item.setQty(15);
-        item.setName("Lays");
-        OrderInfo orderInfo = new OrderInfo();
-        orderInfo.setItemId(1);
-        orderInfo.setOrderStatus("PLACED");
-        orderInfo.setPaymentStatus("ACCEPTED");
-        orderInfo.setQty(2);
-        Mockito.when(inventoryRepo.findById(1)).thenReturn(java.util.Optional.of(item));
-        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
-        orderInfo.setQty(200);
-        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
-        orderInfo.setItemId(2222);
-        Assertions.assertDoesNotThrow(()->this.inventoryService.consumeMessageFromQueue(orderInfo));
+    public void updateItemQtyIntegrationTest(){
+        Mockito.doNothing().when(messageProducer).sendMessage(new OrderInfo());
+        OrderInfo order = new OrderInfo();
+        order.setOrderId(1);
+        order.setOrderStatus("PLACED");
+        order.setQty(1);
+        order.setName("Chicken Burger");
+        order.setPaymentStatus("ACCEPTED");
+        order.setItemId(1);
+        Assertions.assertEquals("IN-PROCESS",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("ACCEPTED",this.inventoryService.updateItemQty(order).getPaymentStatus());
+        order.setQty(100);
+        Assertions.assertEquals("CANCELLED",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("REFUNDED",this.inventoryService.updateItemQty(order).getPaymentStatus());
+        order.setQty(1);
+        order.setItemId(11111);
+        Assertions.assertEquals("CANCELLED",this.inventoryService.updateItemQty(order).getOrderStatus());
+        Assertions.assertEquals("REFUNDED",this.inventoryService.updateItemQty(order).getPaymentStatus());
     }
 }
