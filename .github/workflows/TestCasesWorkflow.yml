@@ -12,7 +12,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11'
-          paths_ignore: '["com/example/InventoryManager/integration_test/InventoryServiceIntegrationTest.java"]'
+          paths_ignore: '["com/example/InventoryManager/integration_test/InventoryServiceIntegrationTest"]'
           distribution: 'adopt'
           cache: maven
       - name: Build with Maven
