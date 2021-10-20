@@ -18,6 +18,6 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: always()
         with:
-          files: unit_test/*.java
+          files: unit_test/**.java
         
         
