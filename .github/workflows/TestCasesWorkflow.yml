@@ -3,7 +3,7 @@ name: Java CI
 on:
   push:
     paths-ignore:
-    - InventoryServiceIntegrationTest.java
+    - 'integration_test/**'
 
 jobs:
   build:
