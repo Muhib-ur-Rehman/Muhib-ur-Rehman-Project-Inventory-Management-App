@@ -14,14 +14,8 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
-      - uses: actions/checkout@v2
-      - name: Publish Unit Test Results
-        uses: actions/setup-java@v2
-        if: always()
-        with:
-          java-version: '11'
-          distribution: 'adopt'
-          cache: maven
           files: src/test/java/com/example/InventoryManager/unit_test/*.java
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots verify
         
         
