@@ -2,8 +2,8 @@ name: Java CI
 
 on:
   push:
-    paths-ignore:
-      - src/test/java/com/example/InventoryManager/integration_test/*
+    paths:
+      - src/test/java/com/example/InventoryManager/unit_test/*
 
 jobs:
   build:
