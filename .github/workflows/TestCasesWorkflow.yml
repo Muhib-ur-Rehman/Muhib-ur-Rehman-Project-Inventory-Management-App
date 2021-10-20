@@ -14,6 +14,7 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
+      - uses: actions/checkout@v2
       - name: Publish Unit Test Results
         uses: actions/setup-java@v2
         if: always()
