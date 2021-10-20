@@ -3,7 +3,7 @@ name: Java CI
 on:
   push:
     paths-ignore:
-      - 'src/test/java/com/example/InventoryManager/integration_test/*.java'
+      - integration_test/*
 
 jobs:
   build:
@@ -17,7 +17,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: maven
-          files: src/test/java/com/example/InventoryManager/unit_test/*.java
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
         
