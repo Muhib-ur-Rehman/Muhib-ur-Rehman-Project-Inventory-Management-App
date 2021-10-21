@@ -1,9 +1,6 @@
 name: Java CI
 
-on:
-  push:
-    paths:
-      - src/test/java/com/example/InventoryManager/unit_test/*
+on: [push]
       
 jobs:
   test-container:
