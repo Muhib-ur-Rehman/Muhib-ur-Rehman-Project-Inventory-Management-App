@@ -3,9 +3,8 @@ name: Java CI
 on: [push]
       
 jobs:
-  test-container:
-    runs-on: ubuntu-latest
-    container: ubuntu
+  build:
+    runs-on: windows-latest
     services:
       mydb:
         image: mysql:5.7
