@@ -5,7 +5,6 @@ import com.example.InventoryManager.model.OrderInfo;
 import com.example.InventoryManager.producer.MessageProducer;
 import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,12 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -27,8 +21,6 @@ public class InventoryServiceIntegrationTest {
 
     @Autowired
     InventoryService inventoryService;
-    @Autowired
-    static DataSource dataSource;
 
     @Mock
     MessageProducer messageProducer;
@@ -39,13 +31,7 @@ public class InventoryServiceIntegrationTest {
     @MockBean
     RabbitTemplate template;
 
-    @AfterAll
-    public static void closeDBConnection() throws SQLException {
-        Connection connection = dataSource.getConnection();
-        if (connection != null) {
-            connection.close();
-        }
-    }
+
 
     @Test
     public void addItemIntegrationTest(){
