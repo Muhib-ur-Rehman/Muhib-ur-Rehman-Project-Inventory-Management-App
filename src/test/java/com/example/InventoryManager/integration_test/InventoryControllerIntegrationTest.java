@@ -95,4 +95,11 @@ public class InventoryControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Item has deleted successfully!!"));
     }
+    
+    @Test
+    @Order(6)
+    public void doCloseConnection() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        connection.close();
+    }
 }
