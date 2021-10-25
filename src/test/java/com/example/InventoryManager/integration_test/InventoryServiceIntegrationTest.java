@@ -42,7 +42,9 @@ public class InventoryServiceIntegrationTest {
     @AfterAll
     public static void closeDBConnection() throws SQLException {
         Connection connection = dataSource.getConnection();
-        connection.close();
+        if (connection != null) {
+            connection.close();
+        }
     }
 
     @Test
