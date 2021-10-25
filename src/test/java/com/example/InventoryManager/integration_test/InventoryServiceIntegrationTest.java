@@ -58,7 +58,7 @@ public class InventoryServiceIntegrationTest {
 
     @Test
     public void updateInventoryIntegrationTest(){
-        Assertions.assertDoesNotThrow(()->this.inventoryService.updateInventory(11,5));
+        Assertions.assertDoesNotThrow(()->this.inventoryService.updateInventory(11,15));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class InventoryServiceIntegrationTest {
         order.setQty(1);
         order.setName("Chicken Burger");
         order.setPaymentStatus("ACCEPTED");
-        order.setItemId(1);
+        order.setItemId(11);
         Assertions.assertEquals("IN-PROCESS",this.inventoryService.updateItemQty(order).getOrderStatus());
         Assertions.assertEquals("ACCEPTED",this.inventoryService.updateItemQty(order).getPaymentStatus());
         order.setQty(100);
