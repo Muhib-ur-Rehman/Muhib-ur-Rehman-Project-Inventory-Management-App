@@ -31,7 +31,7 @@ public class InventoryControllerIntegrationTest {
     @Autowired
     InventoryController inventoryController;
     @Autowired
-    DataSource dataSource;
+    static DataSource dataSource;
 
     private MockMvc mockMvc;
     private ObjectMapper mapper;
@@ -43,7 +43,7 @@ public class InventoryControllerIntegrationTest {
     }
 
     @AfterAll
-    public void closeDBConnection() throws SQLException {
+    public static void closeDBConnection() throws SQLException {
         Connection connection = dataSource.getConnection();
         connection.close();
     }
@@ -94,12 +94,5 @@ public class InventoryControllerIntegrationTest {
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/item/10").contentType("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Item has deleted successfully!!"));
-    }
-    
-    @Test
-    @Order(6)
-    public void doCloseConnection() throws SQLException {
-        Connection connection = dataSource.getConnection();
-        connection.close();
     }
 }

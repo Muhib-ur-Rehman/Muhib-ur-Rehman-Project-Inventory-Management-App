@@ -28,7 +28,7 @@ public class InventoryServiceIntegrationTest {
     @Autowired
     InventoryService inventoryService;
     @Autowired
-    DataSource dataSource;
+    static DataSource dataSource;
 
     @Mock
     MessageProducer messageProducer;
@@ -40,7 +40,7 @@ public class InventoryServiceIntegrationTest {
     RabbitTemplate template;
 
     @AfterAll
-    public void closeDBConnection() throws SQLException {
+    public static void closeDBConnection() throws SQLException {
         Connection connection = dataSource.getConnection();
         connection.close();
     }

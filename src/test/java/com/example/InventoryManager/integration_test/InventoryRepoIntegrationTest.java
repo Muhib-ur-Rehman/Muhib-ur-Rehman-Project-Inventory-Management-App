@@ -19,10 +19,10 @@ public class InventoryRepoIntegrationTest {
     InventoryRepo inventoryRepo;
 
     @Autowired
-    DataSource dataSource;
+    static DataSource dataSource;
 
     @AfterAll
-    public void closeDBConnection() throws SQLException {
+    public static void closeDBConnection() throws SQLException {
         Connection connection = dataSource.getConnection();
         connection.close();
     }
