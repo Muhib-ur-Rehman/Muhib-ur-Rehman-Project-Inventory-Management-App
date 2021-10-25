@@ -6,14 +6,20 @@ import com.example.InventoryManager.repo.InventoryRepo;
 import com.example.InventoryManager.service.InventoryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.datasource.SmartDataSource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,6 +30,8 @@ public class InventoryControllerIntegrationTest {
 
     @Autowired
     InventoryController inventoryController;
+    @Autowired
+    DataSource dataSource;
 
     private MockMvc mockMvc;
     private ObjectMapper mapper;
@@ -32,6 +40,12 @@ public class InventoryControllerIntegrationTest {
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(inventoryController).build();
         mapper=new ObjectMapper();
+    }
+
+    @AfterAll
+    public void closeDBConnection() throws SQLException {
+        Connection connection = dataSource.getConnection();
+        connection.close();
     }
 
     @Test
