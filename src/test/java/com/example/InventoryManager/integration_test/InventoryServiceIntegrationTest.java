@@ -36,7 +36,7 @@ public class InventoryServiceIntegrationTest {
     @Test
     public void addItemIntegrationTest(){
         Inventory item = new Inventory();
-        item.setItemId(10);
+        item.setItemId(11);
         item.setQty(15);
         item.setName("Lays");
         Inventory savedItem = this.inventoryService.addItem(item);
@@ -48,17 +48,17 @@ public class InventoryServiceIntegrationTest {
     @Test
     public void getInventoryItemIntegrationTest(){
         Inventory item = new Inventory();
-        item.setItemId(10);
+        item.setItemId(11);
         item.setQty(15);
         item.setName("Lays");
-        Assertions.assertEquals(item.getItemId(),this.inventoryService.getInventoryItem(10).get().getItemId());
-        Assertions.assertEquals(item.getName(),this.inventoryService.getInventoryItem(10).get().getName());
-        Assertions.assertEquals(item.getQty(),this.inventoryService.getInventoryItem(10).get().getQty());
+        Assertions.assertEquals(item.getItemId(),this.inventoryService.getInventoryItem(11).get().getItemId());
+        Assertions.assertEquals(item.getName(),this.inventoryService.getInventoryItem(11).get().getName());
+        Assertions.assertEquals(item.getQty(),this.inventoryService.getInventoryItem(11).get().getQty());
     }
 
     @Test
     public void updateInventoryIntegrationTest(){
-        Assertions.assertDoesNotThrow(()->this.inventoryService.updateInventory(10,5));
+        Assertions.assertDoesNotThrow(()->this.inventoryService.updateInventory(11,5));
     }
 
     @Test
@@ -70,19 +70,19 @@ public class InventoryServiceIntegrationTest {
 
     @Test
     public void getItemIntegrationTest(){
-        Inventory fetchedItem = this.inventoryService.getItem(10);
-        Assertions.assertEquals(10,fetchedItem.getItemId());
+        Inventory fetchedItem = this.inventoryService.getItem(11);
+        Assertions.assertEquals(11,fetchedItem.getItemId());
         Assertions.assertEquals("Lays",fetchedItem.getName());
     }
 
     @Test
     public void addQtyIntegrationTest(){
-        Assertions.assertDoesNotThrow(()->inventoryService.addQty(10,5));
+        Assertions.assertDoesNotThrow(()->inventoryService.addQty(11,5));
     }
 
     @Test
     public void deleteItemIntegrationTest(){
-        Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(10));
+        Assertions.assertDoesNotThrow(()->inventoryService.deleteItem(11));
     }
 
     @Test
